@@ -1,0 +1,38 @@
+usePlugin 'eclipse'
+usePlugin 'groovy'
+usePlugin 'maven'
+
+defaultTasks 'clean', 'compileGroovy'
+
+repositories {
+    mavenCentral()
+	mavenRepo urls: "http://m2repo.spockframework.org/snapshots"
+}
+
+dependencies {
+    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '1.7.5'	
+    compile group: 'log4j', name: 'log4j', version: '1.2.16', ext: 'jar'
+	
+	// mandatory dependencies for using Spock
+	groovy("org.codehaus.groovy:groovy-all:1.7.3") {
+		exclude module: "jansi"
+	}
+	testCompile "org.spockframework:spock-core:0.5-groovy-1.7-SNAPSHOT"
+	testCompile "junit:junit:4.8.1"
+	
+	// optional dependencies for using Spock
+	testRuntime "cglib:cglib-nodep:2.2"     // enables mocking of classes (in addition to interfaces)
+	testRuntime "org.objenesis:objenesis:1.2" // enables mocking of classes without default constructor (together with CGLIB)
+
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "http://linode.nolatechhelp.com/artifactory/libs-releases-local")	{
+			authentication(userName:"varnadoj", password:"2285833")
+		}
+    }
+}
+
+group = 'groovy'
+version = '0.2'
